@@ -596,7 +596,14 @@
       tpl_eval: function(tpl, map) {
         try {
           return tpl.replace(/\$\{([^\}]*)\}/g, function(tag, key, pos) {
-            return map[key];
+            var i, keyparts, obj, objLen, _i;
+            keyparts = key.split(".");
+            objLen = keyparts.length - 1;
+            obj = map;
+            for (i = _i = 0; 0 <= objLen ? _i < objLen : _i > objLen; i = 0 <= objLen ? ++_i : --_i) {
+              obj = obj[keyparts[i]];
+            }
+            return obj[keyparts[objLen]];
           });
         } catch (error) {
           return "";

@@ -521,7 +521,14 @@
     # @param map [Hash] Data map to eval.
     tpl_eval: (tpl, map) ->
       try
-        tpl.replace /\$\{([^\}]*)\}/g, (tag, key, pos) -> map[key]
+        tpl.replace(/\$\{([^\}]*)\}/g, (tag, key, pos) ->
+          keyparts = key.split(".")
+          objLen = keyparts.length - 1
+          obj = map
+          for i in [0...objLen]
+            obj = obj[keyparts[i]]
+          obj[keyparts[objLen]]
+        )
       catch error
         ""
 
