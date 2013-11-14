@@ -227,9 +227,15 @@
       $inputor = @$inputor
 
       if $inputor.attr('contentEditable') == 'true'
+
+        # firefox doesn't allow items to be deleted when contenteditable is false
+        # https://github.com/ichord/At.js/issues/109
+        # TODO: find better solution to this
+        content_editable = '' + /firefox/i.test(navigator.userAgent)
+
         class_name = "atwho-view-flag atwho-view-flag-#{this.get_opt('alias') || @at}"
-        content_node = "#{content}<span contenteditable='false'>&nbsp;<span>"
-        insert_node = "<span contenteditable='false' class='#{class_name}'>#{content_node}</span>"
+        content_node = "#{content}<span contenteditable='" + content_editable + "'>&nbsp;<span>"
+        insert_node = "<span contenteditable='" + content_editable + "' class='#{class_name}'>#{content_node}</span>"
         $insert_node = $(insert_node).data('atwho-data-item', $li.data('item-data'))
         if document.selection
           $insert_node = $("<span contenteditable='true'></span>").html($insert_node)
